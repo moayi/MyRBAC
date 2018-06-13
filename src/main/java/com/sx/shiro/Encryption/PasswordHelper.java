@@ -6,18 +6,20 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.stereotype.Component;
 
 /**
  * moayi
  *加密信息处理
  * @create 2018-06-11 13:55
  **/
+@Component
 public class PasswordHelper {
     private RandomNumberGenerator randomNumberGenerator =
             new SecureRandomNumberGenerator();
     private String algorithmName = "md5";
     private final int hashIterations = 1024;
-    public void encryptPassword(User user) {
+    public void  encryptPassword(User user) {
         user.setSalt(randomNumberGenerator.nextBytes().toHex());
         String newPassword = new SimpleHash(
                 algorithmName,
@@ -25,5 +27,6 @@ public class PasswordHelper {
                 ByteSource.Util.bytes(user.getUserName()+user.getSalt()),
                 hashIterations).toHex();
         user.setPassWord(newPassword);
+      //  user.setSalt(user.getUserName());
     }
 }

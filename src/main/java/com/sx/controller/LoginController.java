@@ -21,7 +21,6 @@ import java.util.List;
  * @create 2018-06-07 15:01
  **/
 @Controller
-@RequestMapping("/login")
 public class LoginController {
     @Autowired
     private PermissionServcie permissionServcie;
@@ -29,8 +28,7 @@ public class LoginController {
      * 登陆认证处理
      * @return
      */
-    @RequestMapping("/doLogin")
-    @ResponseBody
+    @RequestMapping("/login/doLogin")
     public  void login(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String errorClassName = (String)req.getAttribute("shiroLoginFailure");
         if(UnknownAccountException.class.getName().equals(errorClassName)) {
@@ -40,14 +38,14 @@ public class LoginController {
         } else if(errorClassName != null) {
             req.setAttribute("error", "未知错误：" + errorClassName);
         }
-        req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+        req.getRequestDispatcher("/jsp/login/login.jsp").forward(req, resp);
     }
     /**
      * 登陆成功处理
      * @param session
      * @return
      */
-    @RequestMapping("/toIndex")
+    @RequestMapping("/index")
     public  String homePage(HttpSession session){
         User user=new User();
         user.setId("1");

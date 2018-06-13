@@ -26,7 +26,7 @@
     <!-- 凭证匹配器 -->
     <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
         <property name="hashAlgorithmName" value="md5"/>
-        <property name="hashIterations" value="2"/>
+        <property name="hashIterations" value="1024"/>
         <property name="storedCredentialsHexEncoded" value="true"/>
     </bean>
 
@@ -101,7 +101,7 @@
    <!-- 基于Form表单的身份验证过滤器 -->
     <bean id="formAuthenticationFilter" class="com.sx.shiro.formFilter.CustomFormAuthenticationFilter">
         <property name="usernameParam" value="userName"/>
-        <property name="passwordParam" value="password"/>
+        <property name="passwordParam" value="passWord"/>
         <property name="rememberMeParam" value="rememberMe"/>
         <property name="loginUrl" value="/login/doLogin"/>
     </bean>
@@ -120,7 +120,7 @@
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login/doLogin"/>
-        <property name="successUrl" value="/login/homePage" />
+        <property name="successUrl" value="/index" />
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
         <property name="filters">
             <util:map>
@@ -133,7 +133,7 @@
         <property name="filterChainDefinitions">
             <value>
                 <!--/login/logout = logout-->
-                /index=anon
+                /index=authc
                 /js/**=anon
                 /bootstrap/** = anon
                 /login/doLogin=authc

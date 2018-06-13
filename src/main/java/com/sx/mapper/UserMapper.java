@@ -1,6 +1,7 @@
 package com.sx.mapper;
 
 import com.sx.entity.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -14,8 +15,8 @@ public interface UserMapper {
     /**
      *
      * 通过用户名查询用户
-     * @param username
+     * @param userName
      * @return
      */
-    public  User findByUserName(String username);
+    public  User findByUserName(@Param("userName") String userName);
 }
