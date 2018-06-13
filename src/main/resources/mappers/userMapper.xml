@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sx.mapper.UserMapper">
+    <insert id="insert" parameterType="com.sx.entity.User" >
+        insert into rbac_user values (#{id},#{username},#{password},#{salt},#{email},NOW(),NOW());
+    </insert>
+
+    <select id="findByUserName"  parameterType="String" resultType="com.sx.entity.User">
+        SELECT  * FROM rbac_user WHERE username=#{userName}
+    </select>
+</mapper>
