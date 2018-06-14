@@ -27,6 +27,5 @@ public class PasswordHelper {
                 ByteSource.Util.bytes(user.getUserName()+user.getSalt()),
                 hashIterations).toHex();
         user.setPassWord(newPassword);
-      //  user.setSalt(user.getUserName());
     }
 }

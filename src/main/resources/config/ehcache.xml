@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
     xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
-         updateCheck="false"  name="mymatisscache">
+         updateCheck="false"  name="shirocache">
     <diskStore path="java.io.tmpdir"/>
     <!--
      name:缓存名称。
@@ -16,7 +16,6 @@
      diskExpiryThreadIntervalSeconds：磁盘失效线程运行时间间隔，默认是120秒。
      memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。默认策略是LRU（最近最少使用）。你可以设置为FIFO（先进先出）或是LFU（较少使用）。
      clearOnFlush：内存数量最大时是否清除。
-
   -->
     <defaultCache
             maxElementsInMemory="10000"
@@ -29,4 +28,33 @@
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
     />
+    <!-- 登录记录缓存 锁定10分钟 -->
+    <cache name="passwordRetryCache" eternal="false"
+           timeToIdleSeconds="3600" timeToLiveSeconds="0" overflowToDisk="false"
+           statistics="true">
+    </cache>
+    <!-- 登录记录缓存 锁定10分钟 -->
+    <cache name="lgoinRetryCache"
+           maxEntriesLocalHeap="2000"
+           eternal="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+    <cache name="authorizationCache" eternal="false"
+           timeToIdleSeconds="3600" timeToLiveSeconds="0" overflowToDisk="false"
+           statistics="true">
+    </cache>
+
+    <cache name="authenticationCache" eternal="false"
+           timeToIdleSeconds="3600" timeToLiveSeconds="0" overflowToDisk="false"
+           statistics="true">
+    </cache>
+
+    <cache name="shiro-activeSessionCache" eternal="false"
+           timeToIdleSeconds="3600" timeToLiveSeconds="0" overflowToDisk="false"
+           statistics="true">
+    </cache>
+
 </ehcache>

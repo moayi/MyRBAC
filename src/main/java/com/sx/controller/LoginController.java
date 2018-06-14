@@ -3,6 +3,7 @@ package com.sx.controller;
 import com.sx.entity.Permission;
 import com.sx.entity.User;
 import com.sx.service.PermissionServcie;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,9 @@ public class LoginController {
             req.setAttribute("error", "用户名/密码错误");
         } else if(IncorrectCredentialsException.class.getName().equals(errorClassName)) {
             req.setAttribute("error", "用户名/密码错误");
-        } else if(errorClassName != null) {
+        } else if(ExcessiveAttemptsException.class.getName().equals(errorClassName)){
+            req.setAttribute("error", errorClassName.toString());
+        }else if(errorClassName != null) {
             req.setAttribute("error", "未知错误：" + errorClassName);
         }
         req.getRequestDispatcher("/jsp/login/login.jsp").forward(req, resp);
