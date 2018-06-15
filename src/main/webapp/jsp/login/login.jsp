@@ -36,7 +36,7 @@
         <span style="color: red" id="err">${requestScope.error}</span>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="remember-me"> 记住我
+                <input type="checkbox" value="rememberMe"> 记住我
             </label>
             <br>
             <label>
@@ -52,11 +52,11 @@
 <script src="${RBAC}/js/jquery-2.1.1.min.js"></script>
 <script src="${RBAC}/bootstrap/js/bootstrap.min.js"></script>
 <script>
-    $(function () {
+    /*$(function () {
         if($("#us").val()==""){
             $("#err").hide();
         }
-    })
+    })*/
     function dologin() {
         $("#userF").submit();
     }
