@@ -35,4 +35,10 @@ public class PermissionServcieImpl implements PermissionServcie {
         }
         return menuList;
     }
+
+    @Override
+    public List<String> queryPermissionsByShiro(String userId) {
+        List<String> ps = permissionMapper.queryPermissionsByShiro(userId);
+        return ps;
+    }
 }

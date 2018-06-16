@@ -5,21 +5,19 @@ import com.sx.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping ("/user")
 public class UserController {
     @Autowired
     private UserService userService;
-    @GetMapping("/add")
+    @RequestMapping ("/add")
     @ResponseBody
-    public String addUser(){
-        User u=new User();
-       // u.setUsername("moayi");
-        //u.setPassword("liu123");
-        u.setEmail("1101132623@qq.com");
+    public String addUser(User user ){
         try {
-            userService.addUser(u);
+            userService.addUser(user);
             return "ok";
         } catch (Exception e) {
             e.printStackTrace();

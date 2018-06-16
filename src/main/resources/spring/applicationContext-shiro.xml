@@ -11,42 +11,42 @@
 	<bean id="springCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
         <property name="cacheManager" ref="ehcacheManager"/>
     </bean>
-    <!--ehcache-->
+    <!--ehcache配置-->
     <bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:config/ehcache-shiro.xml"/>
+        <property name="configLocation" value="classpath:config/ehcache.xml"/>
+        <property name="shared" value="true"></property>
+        <property name="cacheManagerName" value="passwordRetryCache"></property>
     </bean>
     
     <!-- 缓存管理器 -->
-    <bean id="cacheManager" class="com.sx.shrio.cache.SpringCacheManagerWrapper">
-        <property name="cacheManager" ref="springCacheManager"/>
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManager" ref="ehcacheManager"/>
     </bean>
 
     <!-- 凭证匹配器 -->
-    <bean id="credentialsMatcher" class="com.sx.shrio.credentials.RetryLimitHashedCredentialsMatcher">
+    <bean id="credentialsMatcher" class="com.sx.shiro.config.RetryLimitHashedCredentialsMatcher">
         <constructor-arg ref="cacheManager"/>
         <property name="hashAlgorithmName" value="md5"/>
-        <property name="hashIterations" value="2"/>
+        <property name="hashIterations" value="1024"/>
         <property name="storedCredentialsHexEncoded" value="true"/>
     </bean>
 
     <!-- Realm实现 -->
-    <bean id="userRealm" class="com.sx.shrio.realm.UserRealm">
+    <bean id="userRealm" class="com.sx.shiro.realm.MyRealm">
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
-        <property name="cachingEnabled" value="false"/>
+        <property name="cachingEnabled" value="true"/>
+        <property name="authenticationCachingEnabled" value="true"/>
+        <property name="authenticationCacheName" value="authenticationCache"/>
     </bean>
 
     <!-- 会话ID生成器 -->
     <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+
     <!-- 会话Cookie模板 -->
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="sid"/>
         <property name="httpOnly" value="true"/>
         <property name="maxAge" value="-1"/>
-    </bean>
-    
-    <bean id="simpleCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
-        <constructor-arg index="0" value="JSESSIONID_COOKIE"/>
-        <property name="httpOnly" value="true"/>
     </bean>
 
     <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
@@ -62,22 +62,7 @@
                   value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
         <property name="cookie" ref="rememberMeCookie"/>
     </bean>
-    <!-- 失效时间是测试成功的！ -->
-	<bean id="redisManager" class="com.sx.shrio.cache.RedisManager">
-		<!--<property name="jedisPool" ref="jedisPool"></property>-->
-		<!-- 失效时间 半小时 -->
-		<property name="expire" value="1800000"></property>
-	</bean>
 
-	<bean id="cachingSessionDao" class="com.sx.shrio.session.CachingSessionDao">
-		<property name="cacheManager" ref="cacheManager"/>
-		<property name="redisManager" ref="redisManager"/>
-	</bean>
-	
-    <bean id="shiroSessionListener" class="com.sx.shrio.session.listener.ShiroSessionListener">
-    	<property name="sessionDao" ref="cachingSessionDao"/>
-    </bean>
-    
     <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
     	<!-- 5分钟调度一次 -->
     	<property name="interval" value="300000"></property>
@@ -86,9 +71,7 @@
     
     <bean id="defaultWebSessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
       <!-- 内存或者缓存中的session的有效时间，60000是60秒,下面是10分钟 -->
-      <property name="globalSessionTimeout" value="600000" />  
-      <property name="sessionDAO" ref="cachingSessionDao" /> 
-      <property name="sessionListeners" ref="shiroSessionListener" /> 
+      <property name="globalSessionTimeout" value="600000" />
       <property name="sessionValidationSchedulerEnabled" value="true" />
       <!-- 会话调度验证器 -->
       <!-- 在这里我将session设置为60秒，调度器每10秒运行一次，发现会被自动清除 -->
@@ -103,60 +86,36 @@
 	</bean>
 
    <!-- 基于Form表单的身份验证过滤器 -->
-    <bean id="formAuthenticationFilter" class="com.sx.shrio.filter.CustomFormAuthenticationFilter">
+    <bean id="formAuthenticationFilter" class="com.sx.shiro.formFilter.CustomFormAuthenticationFilter">
         <property name="usernameParam" value="userName"/>
-        <property name="passwordParam" value="password"/>
-        <property name="captchaParam" value="captcha"/>
+        <property name="passwordParam" value="passWord"/>
         <property name="rememberMeParam" value="rememberMe"/>
         <property name="loginUrl" value="/login/doLogin"/>
-        <property name="failureKeyAttribute" value="shiroLoginFailure"/>
     </bean>
-     
-    <bean id="kickoutSessionControlFilter" class="com.sx.shrio.filter.KickoutSessionControlFilter">
-        <property name="cacheManager" ref="cacheManager"/>
-        <property name="sessionManager" ref="defaultWebSessionManager"/>
-        <property name="kickoutAfter" value="false"/>
-        <property name="maxSession" value="1"/>
-        <property name="kickoutUrl" value="/login/doLogin?kickout=1"/>
-    </bean>
-
-	<bean id="sysUserFilter" class="com.sx.shrio.filter.CustomUserFilter"/>
-
     <!-- Shiro的Web过滤器 -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login/doLogin"/>
-        <property name="successUrl" value="/login/homePage" />
+        <property name="successUrl" value="/index" />
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
         <property name="filters">
             <util:map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
-                <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
-                <entry key="sysUser" value-ref="sysUserFilter"/>                  
-                <!-- <entry key="jCaptchaValidate" value-ref="jCaptchaValidateFilter"/>     -->            
             </util:map>
         </property>
         <property name="filterChainDefinitions">
             <value>
-                /login/logout = logout
-                /DatePicker/**=anon
+                <!--/login/logout = logout-->
+                /index=authc
                 /js/**=anon
-                /static/**=anon
+                /bootstrap/** = anon
                 /login/doLogin=authc
-                /login/captcha=anon
-                /servlet/**=anon
-                /services/**=anon
-                /authenticated = authc
-                /** = kickout,sysUser
             </value>
         </property>
     </bean>
     <!-- Shiro生命周期处理器-->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
-	
-	<aop:config proxy-target-class="true"></aop:config>
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
-    
 </beans>

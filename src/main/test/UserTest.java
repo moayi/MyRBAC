@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
         @ContextConfiguration(name = "child", locations = {"classpath*:/mvc/mvc.xml"})
 })
 // 测试类开启事务,需要指定事务管理器,默认测试完成后,数据库操作自动回滚
-@Transactional(transactionManager = "transactionManager")
+//@Transactional(transactionManager = "transactionManager")
 // 指定数据库操作不回滚,可选
 //@Rollback(value = true)
 public class UserTest {
@@ -33,9 +33,14 @@ public class UserTest {
     @Test
     public  void addUser()throws  Exception{
         User u=new User();
-        //u.setUsername("moayi");
-        //u.setPassword("liu123");
+         u.setUserName("moayi");
+         u.setPassWord("liu123");
         u.setEmail("1101132623@qq.com");
         userService.addUser(u);
+    }
+    @Test
+    public void queryUser(){
+        User moayi = userService.findByUserName("moayi");
+        System.out.println("--->"+moayi.getUserName());
     }
 }

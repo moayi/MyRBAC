@@ -85,5 +85,7 @@
            <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"></context:exclude-filter>
        </context:component-scan>
    <import resource="classpath:spring/applicationContext-mq.xml"></import>
+    <import resource="classpath:spring/applicationContext-redis.xml"></import>
+    <import resource="classpath:spring/applicationContext-shiro.xml"></import>
     <aop:aspectj-autoproxy proxy-target-class="true" />
 </beans>

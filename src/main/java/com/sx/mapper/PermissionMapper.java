@@ -13,4 +13,11 @@ public interface PermissionMapper {
      * @return
      */
     List<Permission> queryPermissionsByUser(User user);
+
+    /**
+     * shrio权限集合
+     * @param userId
+     * @return
+     */
+   List<String> queryPermissionsByShiro(String userId);
 }

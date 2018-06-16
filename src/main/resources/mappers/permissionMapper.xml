@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sx.mapper.PermissionMapper">
+<!--    <resultMap id="BaseResultMap" type="com.sx.entity.Permission">
+        <id column="id" property="Id"></id>
+        <result column="rolename" property="name" jdbcType="VARCHAR"></result>
+        <result column="name" property="name" jdbcType="VARCHAR"></result>
+        <result column="url" property="name" jdbcType="VARCHAR"></result>
+        <result column="pid" property="name" jdbcType="VARCHAR"></result>
+        <result column="open" property="name" jdbcType="VARCHAR"></result>
+        <result column="checked" property="name" jdbcType="VARCHAR"></result>
+        <result column="icon" property="name" jdbcType="VARCHAR"></result>
+    </resultMap>-->
     <select id="queryPermissionsByUser" parameterType="com.sx.entity.User" resultType="com.sx.entity.Permission">
              select
             *
@@ -14,5 +24,19 @@
                     roleId
                 from rbac_user_role
                 where userid =#{Id}))
+    </select>
+    <select id="queryPermissionsByShiro"  resultType="String" parameterType="String">
+            select
+            url
+        from rbac_permission
+        where id in (
+            select
+               permissionId
+            from rbac_role_permission
+            where roleid in (
+                select
+                    roleId
+                from rbac_user_role
+                where userid =#{userId})) and pid!='0'
     </select>
 </mapper>
