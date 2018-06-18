@@ -6,6 +6,7 @@ import com.sx.service.PermissionServcie;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.pam.UnsupportedTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,8 +38,11 @@ public class LoginController {
         } else if(IncorrectCredentialsException.class.getName().equals(errorClassName)) {
             req.setAttribute("error", "用户名/密码错误");
         } else if(ExcessiveAttemptsException.class.getName().equals(errorClassName)){
-            req.setAttribute("error", errorClassName.toString());
-        }else if(errorClassName != null) {
+            req.setAttribute("error","登陆失败超过5次，请10分分钟后再试！");
+        }else if(UnsupportedTokenException.class.getName().equals(errorClassName)){
+            req.setAttribute("error","身份令牌异常，不支持的身份令牌 ！");
+        }
+        else if(errorClassName != null) {
             req.setAttribute("error", "未知错误：" + errorClassName);
         }
         req.getRequestDispatcher("/jsp/login/login.jsp").forward(req, resp);

@@ -10,8 +10,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <!-- spring版本-->
     <spring.version>4.3.9.RELEASE</spring.version>
     <mysql.version>5.1.34</mysql.version>
@@ -22,7 +22,7 @@
     <spring-data-redis.version>1.7.2.RELEASE</spring-data-redis.version>
     <jedis.version>2.8.1</jedis.version>
     <spring-session.version>1.2.0.RELEASE</spring-session.version>
-    <shiro.version>1.2.3</shiro.version>
+    <shiro.version>1.3.2</shiro.version>
     <ehcache.version>2.6.9</ehcache.version>
     <ehcache-web.version>2.0.4</ehcache-web.version>
     <!-- log4j日志文件管理包版 -->
@@ -268,6 +268,11 @@
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
       <version>2.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.client</artifactId>
+      <version>0.31</version>
     </dependency>
   </dependencies>
   <build>
