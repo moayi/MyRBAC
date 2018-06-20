@@ -83,6 +83,7 @@ public class OAuth2AuthenticationFilter extends AuthenticatingFilter {
     @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
                                      ServletResponse response) throws Exception {
+        WebUtils.getAndClearSavedRequest(request);
         issueSuccessRedirect(request, response);
         return false;
     }
